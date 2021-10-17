@@ -8,6 +8,9 @@ require('./bootstrap');
 
 window.Vue = require('vue').default;
 
+Vue.prototype.$_ = window._;
+Vue.prototype.$http = window.axios;
+
 Vue.use(require('v-calendar').default);
 
 const files = require.context('./', true, /\.vue$/i)

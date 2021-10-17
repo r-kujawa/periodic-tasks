@@ -6,7 +6,7 @@
                     <div class="card-header">Tasks</div>
 
                     <div class="card-body">
-                        <v-date-picker />
+                        <task-create />
                     </div>
                 </div>
             </div>
