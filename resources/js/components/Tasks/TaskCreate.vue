@@ -145,19 +145,6 @@ export default {
                 }
             });
         },
-        formatTask() {
-            let start_date = this.task.start_date?.toISOString();
-            let end_date = this.task.end_date?.toISOString();
-
-            return {
-                name: this.task.name,
-                start_date: start_date ? this.$_.truncate(start_date, {length: 10, omission: ''}) : null,
-                repeat: this.task.repeat,
-                week_days: this.task.week_days,
-                ends: this.task.ends,
-                end_date: end_date ? this.$_.truncate(end_date, {length: 10, omission: ''}) : null,
-            }
-        }
     }
 }
 </script>

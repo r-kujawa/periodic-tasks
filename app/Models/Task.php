@@ -33,4 +33,9 @@ class Task extends Model
     {
         return $this->hasMany(CompletedTask::class);
     }
+
+    public function getWeekDaysAttribute()
+    {
+        return explode(',', $this->attributes['week_days'] ?? '');
+    }
 }

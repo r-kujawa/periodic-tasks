@@ -2207,26 +2207,6 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
           alert('Please verify your input and try again.'); // Here we should inject the first error message under the respective inputs.
         }
       });
-    },
-    formatTask: function formatTask() {
-      var _this$task$start_date, _this$task$end_date2;
-
-      var start_date = (_this$task$start_date = this.task.start_date) === null || _this$task$start_date === void 0 ? void 0 : _this$task$start_date.toISOString();
-      var end_date = (_this$task$end_date2 = this.task.end_date) === null || _this$task$end_date2 === void 0 ? void 0 : _this$task$end_date2.toISOString();
-      return {
-        name: this.task.name,
-        start_date: start_date ? this.$_.truncate(start_date, {
-          length: 10,
-          omission: ''
-        }) : null,
-        repeat: this.task.repeat,
-        week_days: this.task.week_days,
-        ends: this.task.ends,
-        end_date: end_date ? this.$_.truncate(end_date, {
-          length: 10,
-          omission: ''
-        }) : null
-      };
     }
   }
 });
@@ -2299,7 +2279,113 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
-/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({});
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
+  created: function created() {
+    this.fetchData();
+  },
+  data: function data() {
+    return {
+      dates: [],
+      showCompleted: false,
+      range: {
+        start: new Date(),
+        end: new Date()
+      }
+    };
+  },
+  computed: {
+    filters: function filters() {
+      return {
+        show_completed: this.showCompleted,
+        from: this.range.start.toISOString().slice(0, 10),
+        to: this.range.end.toISOString().slice(0, 10)
+      };
+    },
+    query: function query() {
+      var _this = this;
+
+      return '?' + Object.keys(this.filters).map(function (key) {
+        return key + '=' + _this.filters[key];
+      }).join('&');
+    }
+  },
+  methods: {
+    fetchData: function fetchData() {
+      var _this2 = this;
+
+      this.$http.get("http://periodic-tasks.test" + '/api/tasks' + this.query).then(function (response) {
+        _this2.dates = response.data;
+      });
+    }
+  },
+  watch: {
+    filters: {
+      deep: true,
+      handler: function handler() {
+        this.fetchData();
+      }
+    }
+  }
+});
 
 /***/ }),
 
@@ -38666,15 +38752,207 @@ var render = function() {
     _c("div", { staticClass: "row justify-content-center" }, [
       _c("div", { staticClass: "col-md-12" }, [
         _c("div", { staticClass: "card" }, [
-          _c("div", { staticClass: "card-header" }, [_vm._v("Tasks")]),
+          _c("div", { staticClass: "card-header" }, [
+            _c("div", { staticClass: "d-flex align-items-center" }, [
+              _c("div", { staticClass: "flex-grow-1" }, [
+                _vm._v(
+                  "\n                              Tasks\n                          "
+                )
+              ]),
+              _vm._v(" "),
+              _c("div", [_c("task-create")], 1)
+            ])
+          ]),
           _vm._v(" "),
-          _c("div", { staticClass: "card-body" }, [_c("task-create")], 1)
+          _c("div", { staticClass: "card-body" }, [
+            _c("div", { staticClass: "mb-3 row align-items-center" }, [
+              _c(
+                "div",
+                { staticClass: "col-md-6" },
+                [
+                  _c("v-date-picker", {
+                    attrs: {
+                      popover: { visibility: "focus" },
+                      mode: "date",
+                      "is-range": ""
+                    },
+                    scopedSlots: _vm._u([
+                      {
+                        key: "default",
+                        fn: function(ref) {
+                          var inputValue = ref.inputValue
+                          var inputEvents = ref.inputEvents
+                          return [
+                            _c("div", { staticClass: "row" }, [
+                              _c(
+                                "label",
+                                {
+                                  staticClass:
+                                    "col-md-2 col-form-label text-end",
+                                  attrs: { for: "date_range_start" }
+                                },
+                                [_vm._v("From")]
+                              ),
+                              _vm._v(" "),
+                              _c(
+                                "input",
+                                _vm._g(
+                                  {
+                                    staticClass: "form-control col-md-4",
+                                    attrs: {
+                                      type: "text",
+                                      id: "date_range_start"
+                                    },
+                                    domProps: { value: inputValue.start }
+                                  },
+                                  inputEvents.start
+                                )
+                              ),
+                              _vm._v(" "),
+                              _c(
+                                "label",
+                                {
+                                  staticClass:
+                                    "col-md-2 col-form-label text-end",
+                                  attrs: { for: "date_range_end" }
+                                },
+                                [_vm._v("To")]
+                              ),
+                              _vm._v(" "),
+                              _c(
+                                "input",
+                                _vm._g(
+                                  {
+                                    staticClass: "form-control col-md-4",
+                                    attrs: {
+                                      type: "text",
+                                      id: "date_range_end"
+                                    },
+                                    domProps: { value: inputValue.end }
+                                  },
+                                  inputEvents.end
+                                )
+                              )
+                            ])
+                          ]
+                        }
+                      }
+                    ]),
+                    model: {
+                      value: _vm.range,
+                      callback: function($$v) {
+                        _vm.range = $$v
+                      },
+                      expression: "range"
+                    }
+                  })
+                ],
+                1
+              ),
+              _vm._v(" "),
+              _c("div", { staticClass: "col-md-3 offset-md-3" }, [
+                _c("div", { staticClass: "form-check" }, [
+                  _c("input", {
+                    directives: [
+                      {
+                        name: "model",
+                        rawName: "v-model",
+                        value: _vm.showCompleted,
+                        expression: "showCompleted"
+                      }
+                    ],
+                    staticClass: "form-check-input",
+                    attrs: { type: "checkbox", id: "show_completed" },
+                    domProps: {
+                      value: true,
+                      checked: Array.isArray(_vm.showCompleted)
+                        ? _vm._i(_vm.showCompleted, true) > -1
+                        : _vm.showCompleted
+                    },
+                    on: {
+                      change: function($event) {
+                        var $$a = _vm.showCompleted,
+                          $$el = $event.target,
+                          $$c = $$el.checked ? true : false
+                        if (Array.isArray($$a)) {
+                          var $$v = true,
+                            $$i = _vm._i($$a, $$v)
+                          if ($$el.checked) {
+                            $$i < 0 && (_vm.showCompleted = $$a.concat([$$v]))
+                          } else {
+                            $$i > -1 &&
+                              (_vm.showCompleted = $$a
+                                .slice(0, $$i)
+                                .concat($$a.slice($$i + 1)))
+                          }
+                        } else {
+                          _vm.showCompleted = $$c
+                        }
+                      }
+                    }
+                  }),
+                  _vm._v(" "),
+                  _c(
+                    "label",
+                    {
+                      staticClass: "form-check-label",
+                      attrs: { for: "show_completed" }
+                    },
+                    [
+                      _vm._v(
+                        "\n                                      Show Completed\n                                  "
+                      )
+                    ]
+                  )
+                ])
+              ])
+            ]),
+            _vm._v(" "),
+            _c("table", { staticClass: "table" }, [
+              _vm._m(0),
+              _vm._v(" "),
+              _c(
+                "tbody",
+                [
+                  _vm._l(_vm.dates, function(date) {
+                    return _vm._l(date.tasks, function(task, index) {
+                      return _c("tr", { key: date.date + "-" + task.id }, [
+                        _c("th", { attrs: { scope: "row" } }, [
+                          _vm._v(_vm._s(!index ? date.date : ""))
+                        ]),
+                        _vm._v(" "),
+                        _c("td", [_vm._v(_vm._s(task.name))]),
+                        _vm._v(" "),
+                        _c("td")
+                      ])
+                    })
+                  })
+                ],
+                2
+              )
+            ])
+          ])
         ])
       ])
     ])
   ])
 }
-var staticRenderFns = []
+var staticRenderFns = [
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("thead", [
+      _c("tr", [
+        _c("th", { attrs: { scope: "col" } }, [_vm._v("Date")]),
+        _vm._v(" "),
+        _c("th", { attrs: { scope: "col" } }, [_vm._v("Task")]),
+        _vm._v(" "),
+        _c("th", { attrs: { scope: "col" } }, [_vm._v("Actions")])
+      ])
+    ])
+  }
+]
 render._withStripped = true
 
 
