@@ -2065,6 +2065,12 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
 /* harmony export */ });
+function ownKeys(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) { symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); } keys.push.apply(keys, symbols); } return keys; }
+
+function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys(Object(source), true).forEach(function (key) { _defineProperty(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
+
+function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+
 //
 //
 //
@@ -2169,28 +2175,32 @@ __webpack_require__.r(__webpack_exports__);
       showModal: false,
       task: {
         name: '',
-        startDate: new Date(),
+        start_date: new Date(),
         repeat: 'never',
-        weekDays: [],
+        week_days: [],
         ends: 'never',
-        endDate: null
+        end_date: null
       },
       weekDays: ['sunday', 'monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday']
     };
   },
   computed: {
     getStartDay: function getStartDay() {
-      var startDay = this.task.startDate.getDay(); // Quick Hack
+      var startDay = this.task.start_date.getDay(); // Quick Hack
 
-      this.task.weekDays = [this.weekDays[startDay]];
+      this.task.week_days = [this.weekDays[startDay]];
       return startDay;
     }
   },
   methods: {
     addTask: function addTask() {
-      var _this = this;
+      var _this$task$end_date,
+          _this = this;
 
-      this.$http.post("http://periodic-tasks.test" + '/tasks', this.formatTask()).then(function (response) {
+      this.$http.post("http://periodic-tasks.test" + '/api/tasks', _objectSpread(_objectSpread({}, this.task), {}, {
+        start_date: this.task.start_date.toISOString().slice(0, 10),
+        end_date: this.task.end_date ? (_this$task$end_date = this.task.end_date) === null || _this$task$end_date === void 0 ? void 0 : _this$task$end_date.toISOString().slice(0, 10) : null
+      })).then(function (response) {
         _this.showModal = false;
       })["catch"](function (error) {
         if (error.response.status == 422) {
@@ -2199,20 +2209,20 @@ __webpack_require__.r(__webpack_exports__);
       });
     },
     formatTask: function formatTask() {
-      var _this$task$startDate, _this$task$endDate;
+      var _this$task$start_date, _this$task$end_date2;
 
-      var startDate = (_this$task$startDate = this.task.startDate) === null || _this$task$startDate === void 0 ? void 0 : _this$task$startDate.toISOString();
-      var endDate = (_this$task$endDate = this.task.endDate) === null || _this$task$endDate === void 0 ? void 0 : _this$task$endDate.toISOString();
+      var start_date = (_this$task$start_date = this.task.start_date) === null || _this$task$start_date === void 0 ? void 0 : _this$task$start_date.toISOString();
+      var end_date = (_this$task$end_date2 = this.task.end_date) === null || _this$task$end_date2 === void 0 ? void 0 : _this$task$end_date2.toISOString();
       return {
         name: this.task.name,
-        start_date: startDate ? this.$_.truncate(startDate, {
+        start_date: start_date ? this.$_.truncate(start_date, {
           length: 10,
           omission: ''
         }) : null,
         repeat: this.task.repeat,
-        week_days: this.task.weekDays,
+        week_days: this.task.week_days,
         ends: this.task.ends,
-        end_date: endDate ? this.$_.truncate(endDate, {
+        end_date: end_date ? this.$_.truncate(end_date, {
           length: 10,
           omission: ''
         }) : null
@@ -38144,7 +38154,7 @@ var render = function() {
                           "label",
                           {
                             staticClass: "form-label",
-                            attrs: { for: "start-date" }
+                            attrs: { for: "start_date" }
                           },
                           [_vm._v("Date")]
                         ),
@@ -38170,7 +38180,7 @@ var render = function() {
                                           staticClass: "form-control",
                                           attrs: {
                                             type: "text",
-                                            id: "start-date"
+                                            id: "start_date"
                                           },
                                           domProps: { value: inputValue }
                                         },
@@ -38183,14 +38193,14 @@ var render = function() {
                             ],
                             null,
                             false,
-                            297521688
+                            3461621738
                           ),
                           model: {
-                            value: _vm.task.startDate,
+                            value: _vm.task.start_date,
                             callback: function($$v) {
-                              _vm.$set(_vm.task, "startDate", $$v)
+                              _vm.$set(_vm.task, "start_date", $$v)
                             },
-                            expression: "task.startDate"
+                            expression: "task.start_date"
                           }
                         })
                       ],
@@ -38279,29 +38289,30 @@ var render = function() {
                                           {
                                             name: "model",
                                             rawName: "v-model",
-                                            value: _vm.task.weekDays,
-                                            expression: "task.weekDays"
+                                            value: _vm.task.week_days,
+                                            expression: "task.week_days"
                                           }
                                         ],
                                         staticClass: "form-check-input",
                                         attrs: {
                                           disabled: index == _vm.getStartDay,
                                           type: "checkbox",
-                                          id: week
+                                          id: week,
+                                          name: "week_days[]"
                                         },
                                         domProps: {
                                           checked: index == _vm.getStartDay,
                                           value: week,
                                           checked: Array.isArray(
-                                            _vm.task.weekDays
+                                            _vm.task.week_days
                                           )
-                                            ? _vm._i(_vm.task.weekDays, week) >
+                                            ? _vm._i(_vm.task.week_days, week) >
                                               -1
-                                            : _vm.task.weekDays
+                                            : _vm.task.week_days
                                         },
                                         on: {
                                           change: function($event) {
-                                            var $$a = _vm.task.weekDays,
+                                            var $$a = _vm.task.week_days,
                                               $$el = $event.target,
                                               $$c = $$el.checked ? true : false
                                             if (Array.isArray($$a)) {
@@ -38311,14 +38322,14 @@ var render = function() {
                                                 $$i < 0 &&
                                                   _vm.$set(
                                                     _vm.task,
-                                                    "weekDays",
+                                                    "week_days",
                                                     $$a.concat([$$v])
                                                   )
                                               } else {
                                                 $$i > -1 &&
                                                   _vm.$set(
                                                     _vm.task,
-                                                    "weekDays",
+                                                    "week_days",
                                                     $$a
                                                       .slice(0, $$i)
                                                       .concat(
@@ -38329,7 +38340,7 @@ var render = function() {
                                             } else {
                                               _vm.$set(
                                                 _vm.task,
-                                                "weekDays",
+                                                "week_days",
                                                 $$c
                                               )
                                             }
@@ -38363,7 +38374,7 @@ var render = function() {
                               "label",
                               {
                                 staticClass: "form-label",
-                                attrs: { for: "end-date" }
+                                attrs: { for: "end_date" }
                               },
                               [_vm._v("Ends")]
                             ),
@@ -38385,7 +38396,7 @@ var render = function() {
                                       value: "never",
                                       type: "radio",
                                       name: "ends",
-                                      id: "never-ending"
+                                      id: "never_ending"
                                     },
                                     domProps: {
                                       checked: _vm._q(_vm.task.ends, "never")
@@ -38405,7 +38416,7 @@ var render = function() {
                                     "label",
                                     {
                                       staticClass: "form-check-label",
-                                      attrs: { for: "never-ending" }
+                                      attrs: { for: "never_ending" }
                                     },
                                     [
                                       _vm._v(
@@ -38437,7 +38448,7 @@ var render = function() {
                                         value: "on",
                                         type: "radio",
                                         name: "ends",
-                                        id: "on-ending"
+                                        id: "on_ending"
                                       },
                                       domProps: {
                                         checked: _vm._q(_vm.task.ends, "on")
@@ -38457,7 +38468,7 @@ var render = function() {
                                       "label",
                                       {
                                         staticClass: "form-check-label",
-                                        attrs: { for: "on-ending" }
+                                        attrs: { for: "on_ending" }
                                       },
                                       [
                                         _vm._v(
@@ -38476,7 +38487,7 @@ var render = function() {
                                       attrs: {
                                         popover: { visibility: "focus" },
                                         "min-date":
-                                          _vm.task.startDate || new Date()
+                                          _vm.task.start_date || new Date()
                                       },
                                       scopedSlots: _vm._u(
                                         [
@@ -38494,7 +38505,7 @@ var render = function() {
                                                         "form-control",
                                                       attrs: {
                                                         type: "text",
-                                                        id: "end-date",
+                                                        id: "end_date",
                                                         disabled:
                                                           _vm.task.ends != "on"
                                                       },
@@ -38511,14 +38522,14 @@ var render = function() {
                                         ],
                                         null,
                                         false,
-                                        3503134803
+                                        3612058721
                                       ),
                                       model: {
-                                        value: _vm.task.endDate,
+                                        value: _vm.task.end_date,
                                         callback: function($$v) {
-                                          _vm.$set(_vm.task, "endDate", $$v)
+                                          _vm.$set(_vm.task, "end_date", $$v)
                                         },
-                                        expression: "task.endDate"
+                                        expression: "task.end_date"
                                       }
                                     })
                                   ],
@@ -38552,7 +38563,7 @@ var render = function() {
                     "button",
                     {
                       staticClass: "btn btn-primary",
-                      attrs: { type: "button" },
+                      attrs: { type: "submit" },
                       on: { click: _vm.addTask }
                     },
                     [_vm._v("Save")]
