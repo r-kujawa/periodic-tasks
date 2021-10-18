@@ -41,7 +41,7 @@
                             </div>
                             <div class="col-md-3 offset-md-3">
                                 <div class="form-check">
-                                    <input v-model="showCompleted" class="form-check-input" type="checkbox" :value="true" id="show_completed">
+                                    <input v-model="showCompleted" class="form-check-input" type="checkbox" :value="1" id="show_completed">
                                     <label class="form-check-label" for="show_completed">
                                         Show Completed
                                     </label>
@@ -60,8 +60,8 @@
                                 <template v-for="date in dates">
                                 <tr v-for="(task, index) in date.tasks" :key="date.date + '-' + task.id">
                                     <th scope="row">{{ ! index ? date.date : '' }}</th>
-                                    <td>{{ task.name }}</td>
-                                    <td></td>
+                                    <td><p :class="{'text-decoration-line-through': task.completed}">{{ task.name }}</p></td>
+                                    <td><button v-if="!task.completed" @click="markCompleted(task, date.date)" type="button" class="btn btn-success btn-sm"><i class="bi-check-lg"></i></button></td>
                                 </tr>
                                 </template>
                             </tbody>
@@ -82,7 +82,7 @@ export default {
     data() {
         return {
             dates: [],
-            showCompleted: false,
+            showCompleted: 0,
             range: {
                 start: new Date(),
                 end: new Date(),
@@ -107,6 +107,13 @@ export default {
                 .then(response => {
                     this.dates = response.data;
                 });
+        },
+        markCompleted(task, date) {
+            this.$http.post(process.env.MIX_APP_URL + '/api/tasks/' + task.id + '/completed', {
+                completion_date: date, 
+            }).then(response => {
+                this.fetchData();
+            });
         }
     },
     watch: {
@@ -121,5 +128,7 @@ export default {
 </script>
 
 <style>
-
+.text-decoration-line-through{
+    text-decoration: line-through;
+}
 </style>

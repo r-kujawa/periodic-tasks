@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\StoreTaskRequest;
+use App\Models\Task;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Auth;
@@ -23,8 +24,19 @@ class TaskController extends Controller
 
         $tasks = Auth::user()->tasks()->with(['completed'])
             ->where(function ($query) use ($current) {
+                $query->where('start_date', '<=', $current)
+                    ->where('end_date', '>=', $current);
+            })
+            ->orWhere(function ($query) use ($max) {
+                $query->where('start_date', '<=', $max)
+                    ->where('end_date', '>=', $max);
+            })
+            ->orWhere(function ($query) use ($current, $max) {
                 $query->whereNull('end_date')
-                    ->orWhere('end_date', '>', $current);
+                    ->where(function ($query) use ($current, $max) {
+                        $query->where('start_date', '<=', $current)
+                            ->orWhere('start_date', '<=', $max);
+                    });
             })
             ->get();
 
@@ -32,9 +44,15 @@ class TaskController extends Controller
 
         while ($max->greaterThanOrEqualTo($current)) {
             $currentTasks = $tasks->reduce(function ($tasks, $task) use ($current, $showCompleted) {
-                if (! $showCompleted && $task->completed->contains(function ($completedTask) use ($current) {
+                if ($task->start_date->greaterThan($current) || (!is_null($task->end_date) && $task->end_date->lessThan($current))) {
+                    return $tasks;
+                }
+
+                $taskCompleted = $task->completed->contains(function ($completedTask) use ($current) {
                     return $completedTask->completion_date->equalTo($current);
-                })) {
+                });
+
+                if ((!$showCompleted) && $taskCompleted) {
                     return $tasks;
                 }
 
@@ -54,7 +72,11 @@ class TaskController extends Controller
                     return $tasks;
                 }
 
-                return [...$tasks, $task];
+                return [...$tasks, [
+                    'id' => $task->id,
+                    'name' => $task->name,
+                    'completed' => $taskCompleted,
+                ]];
             }, []);
 
             if (count($currentTasks)) {
@@ -127,5 +149,19 @@ class TaskController extends Controller
     public function destroy($id)
     {
         //
+    }
+
+    /**
+     * @param \App\Models\Task $task
+     * @param \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
+    public function completed(Task $task, Request $request)
+    {
+        $task->completed()->create([
+            'completion_date' => $request->input('completion_date'),
+        ]);
+
+        return response()->json()->setStatusCode(201);
     }
 }

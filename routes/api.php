@@ -21,4 +21,6 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
     });
 
     Route::apiResource('tasks', TaskController::class);
+
+    Route::post('/tasks/{task}/completed', [TaskController::class, 'completed']);
 });
