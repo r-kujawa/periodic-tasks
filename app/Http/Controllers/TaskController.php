@@ -20,7 +20,7 @@ class TaskController extends Controller
     {
         $current = Carbon::parse($request->query('from'));
         $max = Carbon::parse($request->query('to'));
-        $showCompleted = $request->query('show_completed', false);
+        $showCompleted = filter_var($request->query('show_completed', false), FILTER_VALIDATE_BOOLEAN);
 
         $tasks = Auth::user()->tasks()->with(['completed'])
             ->where(function ($query) use ($current) {

@@ -41,7 +41,7 @@
                             </div>
                             <div class="col-md-3 offset-md-3">
                                 <div class="form-check">
-                                    <input v-model="showCompleted" class="form-check-input" type="checkbox" :value="1" id="show_completed">
+                                    <input v-model="showCompleted" class="form-check-input" type="checkbox" :value="true" id="show_completed">
                                     <label class="form-check-label" for="show_completed">
                                         Show Completed
                                     </label>
@@ -82,7 +82,7 @@ export default {
     data() {
         return {
             dates: [],
-            showCompleted: 0,
+            showCompleted: false,
             range: {
                 start: new Date(),
                 end: new Date(),

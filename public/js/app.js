@@ -2345,7 +2345,7 @@ __webpack_require__.r(__webpack_exports__);
   data: function data() {
     return {
       dates: [],
-      showCompleted: 0,
+      showCompleted: false,
       range: {
         start: new Date(),
         end: new Date()
@@ -39297,9 +39297,9 @@ var render = function() {
                     staticClass: "form-check-input",
                     attrs: { type: "checkbox", id: "show_completed" },
                     domProps: {
-                      value: 1,
+                      value: true,
                       checked: Array.isArray(_vm.showCompleted)
-                        ? _vm._i(_vm.showCompleted, 1) > -1
+                        ? _vm._i(_vm.showCompleted, true) > -1
                         : _vm.showCompleted
                     },
                     on: {
@@ -39308,7 +39308,7 @@ var render = function() {
                           $$el = $event.target,
                           $$c = $$el.checked ? true : false
                         if (Array.isArray($$a)) {
-                          var $$v = 1,
+                          var $$v = true,
                             $$i = _vm._i($$a, $$v)
                           if ($$el.checked) {
                             $$i < 0 && (_vm.showCompleted = $$a.concat([$$v]))
